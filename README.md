@@ -26,7 +26,7 @@ Download a .csv of the CDC FLUview lab tests dataset [here](https://images.caree
 
 - Prioritize states with large vulnerable populations. Consider categorizing each state as low-, medium-, or high-need based on its vulnerable population count.
 
-- Assess data limitations that may prevent you from conducting your desired analyses.
+- Assess data limitations that may prevent conducting the desired analyses.
 
 ## **Tools and Skills**
 
@@ -57,8 +57,6 @@ Download a .csv of the CDC FLUview lab tests dataset [here](https://images.caree
     - T-test where populaion variance is unknown
     - T-score where needed, using the standard error 
 
-  - DELETE commands using DROP and WHERE
-
 ![](https://user-images.githubusercontent.com/101165108/157404857-78432359-3535-46e6-8c46-4bc01e31acde.png) 
 ### **Tableau:**  Visualization of Results Following Visual Design Standards
 
@@ -82,37 +80,34 @@ Download a .csv of the CDC FLUview lab tests dataset [here](https://images.caree
 
 ## **Project Steps**
 
-First, I uploaded the dataset to PostgreSQL and then generated an entity relationship diagram (ERD), which is shown below. I chose PostgreSQL as my tool of choice because we were using Rockbuster&#39;s database, and their questions lent themselves to SQL querying. The questions dealt with subsets of the data, and SQL makes it easy to pull specific portions from datasets. The ERD is necessary for the analysis because it shows how the data tables are connected to one another. We needed an understanding of those relationships to combine the tables while querying the data. There were no difficulties with this stage of the project, as the data was ready to be uploaded into a relational database management system, and PostgreSQL has a built-in ERD generator.
+First, I layed out a design for the project. See it [here](https://github.com/CBoyd424/Medical_Staffing_Agency_Excel_Project/raw/main/Project%20Design.docx). I included my project management plan, questions to guide my analysis, and an initial hypothesis.
 
-![](https://user-images.githubusercontent.com/101165108/157405817-bbb013d2-b7b5-46de-9d99-a1cfc6e9e2ea.png)
+Then, I familiarized myself with the datasets and created the [data summary](https://github.com/CBoyd424/Medical_Staffing_Agency_Excel_Project/raw/main/Data%20summary.docx). I decided to focus on the Census data and flu death data to determine the relationship between vulnerable populations and flu severity. Because age was the only vulnerability present in the datasets, I made age a focal point of my analysis.
 
-Next, I queried the data to answer business questions. These were the most involved steps of the project, requiring SQL expertise. The goal was to come up with result tables that could be exported for visualization.
+Once I had a grasp of the data I was working with, I assessed the integrity of the data. Frequency tables and basic statistics informed this process, as I ensured that the data were accurate, consistent, and without corruption. Knowing this, the door was open for more data quality measures.
 
-The select queries required aggregate functions, multiple joins as well as group by, order by, having, and limit clauses. I also used CTE (common table expressions) and subqueries. Fortunately, I was able to save time by taking advantage of the way many of the questions built on one another. I then was able to copiy previous queries and tweak them to create the common table expressions.
+In addition to the data's integrity, I also evaluated the data's completeness, uniqueness, and timeliness. I decided what to do with missing values, determined the data grain, removed duplicates, and described the rate at which the data was collected. These steps were crucial to the accuracy of the analysis.
 
-A challenge I faced is that more than nine cities—in the top ten countries by customer count—were tied for second in terms of customer count, and Rockbuster wanted the top ten. Moreover, they were tied at a value of one, so any active city was truly in second place. SQL generated ten results, seemingly arbitrarily. In fact, cities 2-9 changed when using a subquery instead of common table expression. To navigate the &quot;multiple-second-place-cities&quot; dilemma, I included a histogram of customer counts in my final analysis after displaying on a point map the top 10 that SQL generated.
+With clean datasets, I could integrate the two. First, I had to find common variables to map the datasets. This required data transformations for both sources. My goal was to integrate the datasets on the observations' year and state. However, the flu deaths were reported monthly for each state, and the census was collected annually for each county. I made the necessary aggregations to adjust the data: I found the sum of flu deaths by year and the population sum by state. Next, I reduced two common variables to one by concatenation. Additionally, the population age bins were smaller than the flu death age bins. So combined categories in the population data to match. Finally, I executed a VLOOKUP to integrate the data. I had to perform the data integration to analyze the relationship between the population data and flu deaths. See the final dataset [here](https://github.com/CBoyd424/Medical_Staffing_Agency_Excel_Project/raw/main/Final%20Data%20set_Medical%20staffing.xlsx).
 
-![](https://user-images.githubusercontent.com/101165108/157405893-2674a613-3124-4763-876f-a3fc6be7a468.png)
+![](https://user-images.githubusercontent.com/101165108/157825250-6a694f53-7acd-41e8-b8e0-c80ece33633f.png)
 
-In hindsight, it would have been better to include all the active cities in the table and the point map. This would have drawn more attention to the &quot;many-way&quot; tie. Additionally had this been a true analysis and not for educational purposes, I would have contacted the data engineer, my direct report, and/or client to see if the data they sent us was incomplete/corrupted. After each successful query, I exported the resulting data to .csv for version control and to be easily read by Microsoft Excel and Tableau.
+Once I had a uniform set of data to analyze, I began the visual analysis in Tableau. I made several visualizations before creating a final storyboard. This included composition charts, comparison charts, temporal visualizations with forecasting, histograms, box and whisker plots, scatterplots, bubble charts, and spatial analysis.
 
-To see the queries individually, see the SQL query project folder [here](https://github.com/CBoyd424/Rockbuster_SQL_Project/tree/main/Example_Queries).
+![](https://user-images.githubusercontent.com/101165108/157825414-3190cbfa-6edd-4a6f-9469-aa00a5a11d57.png)
 
-In Tableau, I made a story board to present my findings to Rockbuster stakeholders. I started with an executive summary, then answer the questions the company posed, and finally displayed some of my own analyses that were discovered. I chose this order to first set the stage and share key results, then show what Rockbuster requested, and finally elucidate with more visualizations of findings.
+Then I looked through my project brief and picked which visualizations best fit the questions that I needed to answer and then built dashboards and a storyboard in Tableau, and recorded a presentation for the stakeholders. 
 
-Although many different charts and graphs were created, only a select few made it to the final presentation. My favorite of the visualizations were the point maps, which were great for geospatial trend spotting. I used size and color to denote the magnitude of the values.
-
-![](https://user-images.githubusercontent.com/101165108/157405477-a41fa121-c26f-4cd0-852b-479f18831ae7.png)
-
-Other additions to the analysis were a scatterplot, which showed the correlation between a country&#39;s customer count and revenue, and a histogram of the customer count by city. A correlation between customers and revenue is often assumed, but we were able to confirm that assumption with the scatterplot; its trendline had a correlation coefficient very close to 1—a near-perfect correlation. The histogram illustrated the lack of customer depth in active cities, as almost every city had just one customer.
-
-There were no setbacks during the storyboard process, as the visualizations were straightforward.
+See the final storybaord on Tableau Public [here](https://public.tableau.com/app/profile/cody.boyd6304/viz/Task2_9_16383387359130/Story1).
 
 ## **Conclusion**
 
-I was able to answer all the questions that Rockbuster asked. The most surprising finding was how many cities had just one customer. If this were not an educational project, I would have reached out to a direct report, data engineer, and/or the client before delivering the final product, to find out whether the lack of customers per city is an error, or not. I did speak with my course mentor about this, mentioning that it may have been a measure to reduce the total amount of data in the dataset. He confirmed this suspicion.
+I was able share insights from historical data with the staffing agency, making suggestions for their planning of the upcoming flu season.
 
-If I were to change anything, I would have included all the active cities in my point map of the top cities by customer count within the top ten countries and explore more questions that came to my mind during this project, that I believed would help Rockbuster enter the online streaming service market and remain competitive.
+The most challenging aspect of the project was transforming the data sets to prepare them for integration. It took great care to make sure the data sets were compatible with one another. Some of the steps were tedious, while others required clever methods to grow closer to uniformity. I had fun working through this stage of the process, and I was happy with the final dataset.
 
-View my final PowerPoint presentation [here](https://coach-courses-us.s3.amazonaws.com/exercises/1054/44753/2ce7ad8426ccf76531020d2587128f01/Data_Imm_3.10_PPT_Cboyd_PDF.pdf)
+To improve upon this analysis, I would have included the vaccination dataset in my analysis. The assignment task asked that we choose two of the four datasets. Vaccination is significant variable in the fight against influenza, so it would be necessary to include in a more robust analysis. Also, the fourth dataset was very incomplete, but I think it would be important to look at the influenza sick cases in hospitals as well, and not just flu deaths. 
 
+If I were to be working for this company in real life, I would be sure to speak with my direct report, the data engineering team, and the clients to make sure I have all the data I need for a proper analysis, and to get the complete data sets with no missing and nulled out values. 
+
+See the final audio visual presentation for Stakeholders on Youtube [here](https://youtu.be/5daKwLwzHaM).
